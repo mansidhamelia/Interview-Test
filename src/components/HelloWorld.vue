@@ -7,13 +7,14 @@
         type="text"
         id="Input"
         placeholder="Search here...."
+        v-on:keyup.enter="save(search)"
       />
     </div>
 
     <div>
       <ul id="myList">
-        <li v-for="data in result">
-          {{ data.item }} <a id="edit" @click="edit(data)"> Edit</a>
+        <li v-for="(data, i) in result" :key="i">
+          {{ data.item }} <a id="edit" @click="edit(data)"> Edit</a> 
         </li>
       </ul>
     </div>
@@ -22,25 +23,25 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
   data() {
     return {
-      search: '',
-      editing: false,
+      search: "",
+      isEditing: false,
+      currentId: "",
       resources: [
-        { item: 'Alpha', id: 1 },
-        { item: 'Applet', id: 2 },
-        { item: 'Aim' , id: 3 },
-        { item: 'Bite', id: 4 },
-        { item: 'ByteFury', id: 5 },
-        { item: 'Cindy' ,id: 6 },
-        { item: 'Chemistry', id: 7 },
-        { item: 'Dog', id: 8 },
-        { item: 'Eye',id:9 },
-        { item: 'Elephant' , id: 10},
-
+        { item: "Alpha", id: 1 },
+        { item: "Applet", id: 2 },
+        { item: "Aim", id: 3 },
+        { item: "Bite", id: 4 },
+        { item: "ByteFury", id: 5 },
+        { item: "Cindy", id: 6 },
+        { item: "Chemistry", id: 7 },
+        { item: "Dog", id: 8 },
+        { item: "Eye", id: 9 },
+        { item: "Elephant", id: 10 },
       ],
-    }
+    };
   },
   computed: {
     result() {
@@ -48,23 +49,27 @@ export default {
         return this.resources.filter((data) => {
           return this.search
             .toLowerCase()
-            .split(' ')
-            .every((v) => data.item.toLowerCase().includes(v))
-        })
+            .split(" ")
+            .every((v) => data.item.toLowerCase().includes(v));
+        });
       } else {
-        return this.resources
+        return this.resources;
       }
     },
   },
-methods:{
-
-    edit(data){
-       console.log(data.item,"aaa")
-    this.search = data.item
+  methods: {
+    edit(data) {
+      this.isEditing = true
+      this.search = data.item;
+      this.currentId = data.id;
     },
 
-}
-}
+    save(data) {
+      const pos = this.resources.findIndex((r) => r.id == this.currentId);
+      this.resources[pos].item = data;
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
