@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <h2>Search List</h2>
+    <h2>Filter List</h2>
     <div>
       <input
         v-model="search"
@@ -14,7 +14,9 @@
     <div>
       <ul id="myList">
         <li v-for="(data, i) in result" :key="i">
-          {{ data.item }} <a id="edit" @click="edit(data)"> Edit</a> 
+          {{ data.item }}
+          <a id="edit" @click="edit(data)"> Edit</a>
+          <a id="delete" v-on:click="remove(data)"> Delete</a>
         </li>
       </ul>
     </div>
@@ -45,7 +47,7 @@ export default {
   },
   computed: {
     result() {
-      if (this.search) {
+      if (this.search && !this.isEditing) {
         return this.resources.filter((data) => {
           return this.search
             .toLowerCase()
@@ -59,14 +61,25 @@ export default {
   },
   methods: {
     edit(data) {
-      this.isEditing = true
+      this.isEditing = true;
       this.search = data.item;
       this.currentId = data.id;
     },
 
     save(data) {
-      const pos = this.resources.findIndex((r) => r.id == this.currentId);
+      const pos = this.resources.findIndex((x) => x.id == this.currentId);
       this.resources[pos].item = data;
+      alert(`Item Updated successfully to ${data}`);
+
+      this.isEditing = false;
+    },
+
+    remove(data) {
+      this.currentId = data.id;
+      const index = this.resources.findIndex((x) => x.id == this.currentId);
+      if (index > -1) {
+        this.resources.splice(index, 1);
+      }
     },
   },
 };
@@ -125,6 +138,11 @@ input:hover {
 
 #edit {
   padding-left: 30px;
-cursor: pointer;
+  cursor: pointer;
+}
+#delete {
+  padding-left: 20px;
+  color: red;
+  cursor: pointer;
 }
 </style>
